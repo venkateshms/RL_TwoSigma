@@ -55,13 +55,13 @@ turns_optimal=np.array(
    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
 
 #### Functions
-def print_enemy_ships(board):
-  print('\nEnemy Ships')
+def print_opps(board):
+  print('\theOpps Ships')
   for ship in board.ships.values():
     if ship.player_id != me.id:
       print('{:6}  {} halite {}'.format(ship.id,ship.position,ship.halite))
       
-def print_actions(board):
+def print_ac(board):
   print('\nShip Actions')
   for ship in me.ships:
     print('{:6}  {}  {} halite {}'.format(ship.id,ship.position,ship.next_action,ship.halite))
@@ -69,7 +69,7 @@ def print_actions(board):
   for sy in me.shipyards:
     print('{:6}  {}  {}'.format(sy.id,sy.position,sy.next_action))
 
-def print_none(*args):
+def print_n(*args):
   pass
 
 def compute_max_ships(step):
@@ -84,7 +84,7 @@ def compute_max_ships(step):
   else:
     return CONFIG_MAX_SHIPS-5
 
-def set_turn_data(board):
+def turn_data(board):
   #initialize the global turn data for this turn
   turn.num_ships=len(me.ships)
   turn.max_ships=compute_max_ships(board.step)
@@ -92,11 +92,6 @@ def set_turn_data(board):
   #this is matrix of halite in cells
   turn.halite_matrix=np.reshape(board.observation['halite'], (board.configuration.size,board.configuration.size))
   turn.num_shipyards=len(me.shipyards)
-  #compute enemy presence and enemy halite matrices
-  turn.EP,turn.EH,turn.ES=gen_enemy_halite_matrix(board)
-  #filled in by shipid as a ship takes up a square
-  turn.taken={}
-  turn.last_episode = (board.step == (board.configuration.episode_steps-2))
   
 def init(obs,config):
   #This is only called on first call to agent()
@@ -149,11 +144,6 @@ def move(pos, action):
     ret=pos+Point(0,-1)
   if action==ShipAction.EAST:
     ret=pos+Point(1,0)
-  if action==ShipAction.WEST:
-    ret=pos+Point(-1,0)
-  if ret is None:
-    ret=pos
-  #print('move pos {} {} => {}'.format(pos,action,ret))
   return ret % size
 
 def dirs_to(p1, p2, size=21):
