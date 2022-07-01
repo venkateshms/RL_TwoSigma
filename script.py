@@ -1,6 +1,6 @@
 # Ran in kaggle env with GPU 
 
-## Darren Chang, Madhavan Venkatesh
+## Madhavan Venkatesh
 
 import time
 import copy
